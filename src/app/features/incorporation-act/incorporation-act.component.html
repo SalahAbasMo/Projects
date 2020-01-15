@@ -1,0 +1,85 @@
+<div class="main-content">
+  <div *ngIf="isLoading" class="mt-5 text-center">
+    <app-loading-spinner></app-loading-spinner>
+  </div>
+  <div class="container-fluid">
+    <div class="row  d-flex justify-content-center" *ngIf="!isLoading">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header card-header-danger">
+            <h4 class="card-title">Incorporation-Act</h4>
+            <p class="card-category">You can Add or Edit here</p>
+          </div>
+          <div class="card-body">
+            <div class="col-md-10">
+              <form #incorpForm="ngForm" (ngSubmit)="onCreatIncorp(incorpForm)">
+                <div class="form-group" [hidden]="!editMode">
+                  <label for="Id">Incorp-Act Code</label>
+                  <input type="number" name="IncorpID" class="form-control" ngModel [disabled]="editMode" />
+                </div>
+                <div class="form-group">
+                  <label for="Id">Incorp-Act Name</label>
+                  <input type="text" name="IncorporationActName" class="form-control" ngModel required
+                    #name="ngModel" />
+                  <small *ngIf="!name.valid && name.touched" class="form-text text-muted text-danger">please enter valid
+                    name</small>
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn  mr-3 {{
+                      editMode == true ? 'btn-warning' : 'btn-success'
+                    }}" [disabled]="!incorpForm.valid">
+                    {{ editMode ? "Update" : "Add" }}
+                  </button>
+                  <button type="button" class="btn btn-primary" (click)="onResetIncorpFrom()">
+                    clear
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header card-header-danger">
+            <h4 class="card-title mt-0 text-center"> Incorporation-Act Data Table</h4>
+            <p class="card-category"> </p>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <ngx-datatable class="material" [rows]="incorpData" [columnMode]="'force'" [limit]="5" [rowHeight]="50"
+                [columns]="columns" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50">
+                <ngx-datatable-column prop="IncorporationActId" [sortable]="true" name="Incorp-Act Code">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.IncorporationActId }}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column prop="IncorporationActName" [sortable]="true" name="Incorp-Act Name">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.IncorporationActName  }}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column [sortable]="false" name="Edit">
+                  <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                    <button type="button" class="btn btn-sm btn-warning" (click)="onUpdateincorp(row, rowIndex)">
+                      <i class="fas fa-edit fa-lg text-white"></i>
+                    </button>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column [sortable]="false" name="Delete">
+                  <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                    <button mwlConfirmationPopover [popoverTitle]="popoverTitle" [popoverMessage]="popoverMessage"
+                      placement="left" (confirm)="onDeletIncorp(row, rowIndex)" (cancel)="cancelClicked = true"
+                      class="btn btn-sm btn-danger">
+                      <i class="fas fa-trash-alt fa-lg"></i>
+                    </button>
+                  </ng-template>
+                </ngx-datatable-column>
+              </ngx-datatable>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>

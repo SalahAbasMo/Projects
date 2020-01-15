@@ -1,0 +1,98 @@
+<div class="main-content">
+  <div *ngIf="isLoading" class="mt-5 text-center">
+    <app-loading-spinner></app-loading-spinner>
+  </div>
+  <div class="container-fluid">
+    <div class="row  d-flex justify-content-center" *ngIf="!isLoading">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header card-header-danger">
+            <h4 class="card-title">Employee</h4>
+            <p class="card-category">You can Add or Edit here</p>
+          </div>
+          <div class="card-body">
+            <div class="col-md-10">
+              <form [formGroup]="employeeForm" (ngSubmit)="onCreatEmployee(employeeForm)">
+                <div class="form-group" [hidden]="!editMode">
+                  <label for="Id">Employee ID</label>
+                  <input type="number" name="EmployeeId" formControlName="EmployeeId" class="form-control" disabled />
+                </div>
+                <div class="form-group">
+                  <label for="Name">Employee Name</label>
+                  <input type="text" formControlName="EmployeeName" class="form-control" value="EmployeeName" />
+                  <small *ngIf="
+                    !employeeForm.get('EmployeeName').valid &&
+                    employeeForm.get('EmployeeName').touched
+                  " class="form-text text-muted text-danger">please enter valid name</small>
+                </div>
+                <div class="form-group">
+                  <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="customCheck1" formControlName="Inactive" />
+                    <label class="custom-control-label" for="customCheck1">Active</label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn  mr-3 {{
+                    editMode == true ? 'btn-warning' : 'btn-success'
+                  }}" [disabled]="!employeeForm.valid">
+                    {{ editMode ? "Update" : "Add" }}
+                  </button>
+                  <button type="button" class="btn btn-primary" (click)="onResetEmployeeFrom()">
+                    clear
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header card-header-danger">
+            <h4 class="card-title mt-0 text-center"> Employee Data Table</h4>
+            <p class="card-category"> </p>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <ngx-datatable class="material" [rows]="employeData" [columnMode]="'force'" [limit]="5" [rowHeight]="50"
+                [columns]="columns" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50">
+                <ngx-datatable-column prop="EmployeeID" [sortable]="true" name="Employee Code">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.EmployeeID}}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column prop="EmployeeName" [sortable]="true" name="Employee Name">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.EmployeeName}}
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column [sortable]="false" name="Active">
+                  <ng-template let-row="row" ngx-datatable-cell-template>
+                    <i *ngIf="row.Inactive == true" class="far fa-check-circle text-primary fa-2x"></i>
+                    <i *ngIf="row.Inactive == false" class="far fa-times-circle text-primary fa-2x"></i>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column [sortable]="false" name="Edit">
+                  <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                    <button type="button" class="btn btn-sm btn-warning" (click)="onUpdateEmployee(row,rowIndex)">
+                      <i class="fas fa-edit fa-lg text-white"></i>
+                    </button>
+                  </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column [sortable]="false" name="Delete">
+                  <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+                    <button mwlConfirmationPopover [popoverTitle]="popoverTitle" [popoverMessage]="popoverMessage"
+                      placement="left" (confirm)="onDeletEmployee(row, rowIndex)" (cancel)="cancelClicked = true"
+                      class="btn btn-sm btn-danger">
+                      <i class="fas fa-trash-alt fa-lg"></i>
+                    </button>
+                  </ng-template>
+                </ngx-datatable-column>
+              </ngx-datatable>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
